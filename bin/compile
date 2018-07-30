@@ -15,4 +15,7 @@ rm -rf $BUILD_DIR/scripts
 rm -rf $BUILD_DIR/project/target/node-modules
 find . -type f -name '*.mmdb' -delete
 
+cd $BUILD_DIR
+du -sh *
+
 echo "Cleanup done..."
