@@ -3,10 +3,17 @@
 
 BUILD_DIR=$1
 
-echo "Deleting node_modules..."
-rm -r $BUILD_DIR/node_modules
+echo "Cleaning up..."
 
-echo "Deleting test directory..."
-rm -r $BUILD_DIR/test
+rm -rf $BUILD_DIR/node_modules
+rm -rf $BUILD_DIR/test
+rm -rf $BUILD_DIR/target/web/web-modules/test
+rm -rf $BUILD_DIR/target/web/public/test
+rm -rf $BUILD_DIR/cypress
+rm -rf $BUILD_DIR/git-hooks
+rm -rf $BUILD_DIR/lib
+rm -rf $BUILD_DIR/scripts
+rm -rf $BUILD_DIR/project/target/node-modules
+find . -type f -name '*.mmdb' -delete
 
 echo "Cleanup done..."
