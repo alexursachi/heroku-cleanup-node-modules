@@ -18,4 +18,16 @@ find . -type f -name '*.mmdb' -delete
 cd $BUILD_DIR
 du -sh *
 
+echo "Modules..."
+cd modules
+du -sh *
+
+echo "Commons..."
+cd common-module
+du -sh *
+
+echo "Target..."
+cd target
+du -sh *
+
 echo "Cleanup done..."
