@@ -3,6 +3,12 @@
 
 BUILD_DIR=$1
 
+echo "PWD..."
+pwd
+
+echo "LS..."
+ls
+
 echo "Deleting node_modules..."
 rm -r $BUILD_DIR/node_modules
 
