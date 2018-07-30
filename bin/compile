@@ -6,7 +6,7 @@ BUILD_DIR=$1
 echo "Deleting node_modules..."
 rm -r $BUILD_DIR/node_modules
 
-cd $BUILD_DIR
-ls
+echo "Deleting test directory..."
+rm -r $BUILD_DIR/test
 
 echo "Cleanup done..."
