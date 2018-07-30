@@ -6,28 +6,7 @@ BUILD_DIR=$1
 echo "Cleaning up..."
 
 rm -rf $BUILD_DIR/node_modules
-rm -rf $BUILD_DIR/test
-rm -rf $BUILD_DIR/target/web
-rm -rf $BUILD_DIR/cypress
-rm -rf $BUILD_DIR/git-hooks
-rm -rf $BUILD_DIR/lib
-rm -rf $BUILD_DIR/scripts
 rm -rf $BUILD_DIR/project/target/node-modules
-find . -type f -name '*.mmdb' -delete
-
-cd $BUILD_DIR
-du -sh *
-
-echo "Modules..."
-cd modules
-du -sh *
-
-echo "Commons..."
-cd common-module
-du -sh *
-
-echo "Target..."
-cd target
-du -sh *
+rm -rf $BUILD_DIR/modules/*/target
 
 echo "Cleanup done..."
