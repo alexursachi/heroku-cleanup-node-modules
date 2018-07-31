@@ -32,6 +32,9 @@ cd mongo/${FILE_NAME}/bin/
 
 echo "Dumping data ..."
 
+echo "${MONGODB_URI}"
+echo "${MONGOLAB_COBALT_URI}"
+
 dump_protocol="$(echo ${MONGODB_URI} | grep :// | sed -e's,^\(.*://\).*,\1,g')"
 dump_url="$(echo ${MONGODB_URI/$dump_protocol/})"
 dump_userAndPass="$(echo $dump_url | grep @ | cut -d@ -f1)"
