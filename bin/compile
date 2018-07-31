@@ -10,3 +10,30 @@ rm -rf $BUILD_DIR/project/target/node-modules
 rm -rf $BUILD_DIR/modules/*/target
 
 echo "Cleanup done..."
+
+echo "Seting up mongo data..."
+
+mkdir mongo
+mkdir sandbox_db
+
+chmod -R a+rwX mongo
+chmod -R a+rwX sandbox_db
+
+VERSION=3.6.5
+FILE_NAME="mongodb-linux-x86_64-ubuntu1604-${VERSION}"
+
+echo "Downloading mongodb version $VERSION ..."
+download_url="https://fastdl.mongodb.org/linux/${FILE_NAME}.tgz"
+curl ${download_url} -s -o - | tar xzf - -C mongo
+
+chmod -R a+rwX mongo/${FILE_NAME}
+chmod +x mongo/${FILE_NAME}/bin/*
+cd mongo/${FILE_NAME}/bin/
+
+echo "Getting data ..."
+./mongodump --uri=${MONGODB_URI} --dir=sandbox_db
+
+echo "Restoring data ..."
+./mongorestore --uri=${MONGOLAB_COBALT_URI} --dir=sandbox_db
+
+echo "Seting up mongo data done..."
