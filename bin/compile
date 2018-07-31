@@ -1,15 +1,4 @@
 #!/usr/bin/env bash
-# bin/compile BUILD_DIR CACHE_DIR ENV_DIR
-
-BUILD_DIR=$1
-
-echo "Cleaning up..."
-
-rm -rf $BUILD_DIR/node_modules
-rm -rf $BUILD_DIR/project/target/node-modules
-rm -rf $BUILD_DIR/modules/*/target
-
-echo "Cleanup done..."
 
 echo "Seting up mongo data..."
 
@@ -30,10 +19,28 @@ chmod -R a+rwX mongo/${FILE_NAME}
 chmod +x mongo/${FILE_NAME}/bin/*
 cd mongo/${FILE_NAME}/bin/
 
-echo "Getting data ..."
-./mongodump --uri=${MONGODB_URI} --dir=sandbox_db
+echo "Dumping data ..."
+
+dump_protocol="$(echo ${MONGODB_URI} | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+dump_url="$(echo ${MONGODB_URI/$dump_protocol/})"
+dump_userAndPass="$(echo $dump_url | grep @ | cut -d@ -f1)"
+dump_user=$(echo $dump_userAndPass | cut -d: -f1)
+dump_pass=$(echo $dump_userAndPass | cut -d: -f2)
+dump_host="$(echo ${dump_url/$dump_userAndPass@/} | cut -d/ -f1)"
+dump_db="$(echo $dump_url | grep / | cut -d/ -f2-)"
+
+./mongodump -h ${dump_host} -d ${dump_db} -u ${dump_user} -p ${dump_pass} -o sandbox_db
 
 echo "Restoring data ..."
-./mongorestore --uri=${MONGOLAB_COBALT_URI} --dir=sandbox_db
+
+protocol="$(echo ${MONGOLAB_COBALT_URI} | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+url="$(echo ${MONGOLAB_COBALT_URI/$protocol/})"
+userAndPass="$(echo $url | grep @ | cut -d@ -f1)"
+user=$(echo $userAndPass | cut -d: -f1)
+pass=$(echo $userAndPass | cut -d: -f2)
+host="$(echo ${url/$userAndPass@/} | cut -d/ -f1)"
+db="$(echo $url | grep / | cut -d/ -f2-)"
+
+./mongorestore -h ${host} -d ${db} -u ${user} -p ${pass} sandbox_db/${dumped_db}
 
 echo "Seting up mongo data done..."
