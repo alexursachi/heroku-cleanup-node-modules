@@ -2,6 +2,7 @@
 # bin/compile BUILD_DIR CACHE_DIR ENV_DIR
 
 BUILD_DIR=$1
+ENV_DIR=$3 
 
 echo "Cleaning up..."
 
@@ -31,6 +32,9 @@ chmod +x mongo/${FILE_NAME}/bin/*
 cd mongo/${FILE_NAME}/bin/
 
 echo "Dumping data ..."
+
+MONGODB_URI=$(cat $ENV_DIR/MONGODB_URI)
+MONGOLAB_COBALT_URI=$(cat $ENV_DIR/MONGOLAB_COBALT_URI)
 
 echo "${MONGODB_URI}"
 echo "${MONGOLAB_COBALT_URI}"
