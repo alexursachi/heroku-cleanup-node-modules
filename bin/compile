@@ -59,6 +59,6 @@ pass=$(echo $userAndPass | cut -d: -f2)
 host="$(echo ${url/$userAndPass@/} | cut -d/ -f1)"
 db="$(echo $url | grep / | cut -d/ -f2-)"
 
-./mongorestore --host=${host} --db=${db} --username=${user} --password=${pass} sandbox_db/${dumped_db}
+./mongorestore --host=${host} --db=${db} --username=${user} --password=${pass} sandbox_db/${dump_db}
 
 echo "Seting up mongo data done..."
