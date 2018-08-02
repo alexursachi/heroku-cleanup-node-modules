@@ -33,8 +33,8 @@ echo "Dumping data ..."
 mkdir sandbox_db
 chmod -R a+rwX sandbox_db
 
-MONGODB_URI=$(cat $ENV_DIR/MONGODB_URI)
-MONGOLAB_COBALT_URI=$(cat $ENV_DIR/MONGOLAB_COBALT_URI)
+MONGODB_URI=$(cat $ENV_DIR/MONGODB_B_URI)
+MONGOLAB_COBALT_URI=$(cat $ENV_DIR/MONGODB_URI)
 
 dump_protocol="$(echo ${MONGODB_URI} | grep :// | sed -e's,^\(.*://\).*,\1,g')"
 dump_url="$(echo ${MONGODB_URI/$dump_protocol/})"
@@ -56,6 +56,8 @@ pass=$(echo $userAndPass | cut -d: -f2)
 host="$(echo ${url/$userAndPass@/} | cut -d/ -f1)"
 db="$(echo $url | grep / | cut -d/ -f2-)"
 
-./mongorestore --host=${host} --db=${db} --username=${user} --password=${pass} sandbox_db/${dump_db}
+#./mongorestore --host=${host} --db=${db} --username=${user} --password=${pass} sandbox_db/${dump_db}
+
+echo "--host=${host} --db=${db} --username=${user} --password=${pass} sandbox_db/${dump_db}"
 
 echo "Seting up mongo data done..."
