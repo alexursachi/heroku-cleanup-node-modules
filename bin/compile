@@ -58,4 +58,6 @@ db="$(echo $url | grep / | cut -d/ -f2-)"
 
 ./mongorestore --host=${host} --db=${db} --username=${user} --password=${pass} sandbox_db/${dump_db}
 
+export TT_MONGOLAB_URI=${REVIEWDB_URI}
+
 echo "Seting up mongo data done..."
