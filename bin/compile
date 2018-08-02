@@ -62,7 +62,7 @@ echo "Restoring data ..."
 for file in $ENV_DIR/*
 do
     if [[ $file =~ .*MONGOLAB_.*_URI$ ]] || [[ $file =~ .*MONGODB_.*_URI$ ]]; then
-        DEST_MONGODB_URI = $(cat $file)
+        DEST_MONGODB_URI=$(cat $file)
     fi
 done
 
