@@ -4,6 +4,7 @@
 BUILD_DIR=$1
 ENV_DIR=$3
 
+#------------------------------ Slim down slug --------------------------------------
 echo "Cleaning up..."
 
 rm -rf $BUILD_DIR/node_modules
@@ -11,3 +12,75 @@ rm -rf $BUILD_DIR/project/target/node-modules
 rm -rf $BUILD_DIR/modules/*/target
 
 echo "Cleanup done..."
+
+#------------------------------ Download mongo --------------------------------------
+
+echo "Seting up mongo data..."
+
+mkdir mongo
+chmod -R a+rwX mongo
+
+VERSION=3.6.5
+FILE_NAME="mongodb-linux-x86_64-ubuntu1604-${VERSION}"
+
+echo "Downloading mongodb version $VERSION ..."
+download_url="https://fastdl.mongodb.org/linux/${FILE_NAME}.tgz"
+curl ${download_url} -s -o - | tar xzf - -C mongo
+
+chmod -R a+rwX mongo/${FILE_NAME}
+chmod +x mongo/${FILE_NAME}/bin/*
+cd mongo/${FILE_NAME}/bin/
+
+#-------------------------------- Get some data -------------------------------------
+echo "Dumping data ..."
+
+mkdir sandbox_db
+chmod -R a+rwX sandbox_db
+
+SOURCE_MONGODB_URI=$(cat $ENV_DIR/SOURCE_MONGODB_URI)
+
+echo "SOURCE_MONGODB_URI is ${SOURCE_MONGODB_URI}"
+
+#Break down SOURCE_MONGODB_URI
+dump_protocol="$(echo ${SOURCE_MONGODB_URI} | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+dump_url="$(echo ${SOURCE_MONGODB_URI/$dump_protocol/})"
+dump_userAndPass="$(echo $dump_url | grep @ | cut -d@ -f1)"
+dump_user=$(echo $dump_userAndPass | cut -d: -f1)
+dump_pass=$(echo $dump_userAndPass | cut -d: -f2)
+dump_host="$(echo ${dump_url/$dump_userAndPass@/} | cut -d/ -f1)"
+dump_db="$(echo $dump_url | grep / | cut -d/ -f2-)"
+
+#dump data from DEST_MONGODB_URI
+./mongodump --host=${dump_host} --db=${dump_db} --username=${dump_user} --password=${dump_pass} -o sandbox_db
+
+
+#---------------------------------- Restore data ------------------------------------
+
+echo "Restoring data ..."
+
+#Lookup correct config var for SOURCE_MONGODB_URI
+for file in $ENV_DIR/*
+do
+    if [[ -f $file ]] && ([[ $file =~ MONGOLAB_.*_URI$ ]] || [[ $file =~ MONGODB_.*_URI$ ]]); then
+        DEST_MONGODB_URI = $(cat $file)
+    fi
+done
+
+echo "DEST_MONGODB_URI is $DEST_MONGODB_URI"
+
+
+#Break down DEST_MONGODB_URI
+protocol="$(echo ${DEST_MONGODB_URI} | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+url="$(echo ${DEST_MONGODB_URI/$protocol/})"
+userAndPass="$(echo $url | grep @ | cut -d@ -f1)"
+user=$(echo $userAndPass | cut -d: -f1)
+pass=$(echo $userAndPass | cut -d: -f2)
+host="$(echo ${url/$userAndPass@/} | cut -d/ -f1)"
+db="$(echo $url | grep / | cut -d/ -f2-)"
+
+#dump data to DEST_MONGODB_URI
+./mongorestore --host=${host} --db=${db} --username=${user} --password=${pass} sandbox_db/${dump_db}
+
+echo "Setting up data done..."
+
+#-------------------------------------------------------------------------------------
