@@ -36,8 +36,8 @@ chmod -R a+rwX sandbox_db
 MONGODB_URI=$(cat $ENV_DIR/MONGODB_URI)
 MONGOLAB_COBALT_URI=$(cat $ENV_DIR/MONGOLAB_COBALT_URI)
 
-echo "${MONGODB_URI}"
-echo "${MONGOLAB_COBALT_URI}"
+echo "Dumping from ${MONGODB_URI}"
+echo "Into ${MONGOLAB_COBALT_URI}"
 
 dump_protocol="$(echo ${MONGODB_URI} | grep :// | sed -e's,^\(.*://\).*,\1,g')"
 dump_url="$(echo ${MONGODB_URI/$dump_protocol/})"
