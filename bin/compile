@@ -61,7 +61,7 @@ echo "Restoring data ..."
 #Lookup correct config var for SOURCE_MONGODB_URI
 for file in $ENV_DIR/*
 do
-    if [[ -f $file ]] && ([[ $file =~ .*MONGOLAB_.*_URI$ ]] || [[ $file =~ .*MONGODB_.*_URI$ ]]); then
+    if [[ $file =~ .*MONGOLAB_.*_URI$ ]] || [[ $file =~ .*MONGODB_.*_URI$ ]]; then
         DEST_MONGODB_URI = $(cat $file)
     fi
 done
@@ -82,8 +82,5 @@ db="$(echo $url | grep / | cut -d/ -f2-)"
 ./mongorestore --host=${host} --db=${db} --username=${user} --password=${pass} sandbox_db/${dump_db}
 
 echo "Setting up data done..."
-
-cd $ENV_DIR
-ls
 
 #-------------------------------------------------------------------------------------
