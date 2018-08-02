@@ -36,9 +36,6 @@ chmod -R a+rwX sandbox_db
 MONGODB_URI=$(cat $ENV_DIR/MONGODB_URI)
 MONGOLAB_COBALT_URI=$(cat $ENV_DIR/MONGOLAB_COBALT_URI)
 
-echo "Dumping from ${MONGODB_URI}"
-echo "Into ${MONGOLAB_COBALT_URI}"
-
 dump_protocol="$(echo ${MONGODB_URI} | grep :// | sed -e's,^\(.*://\).*,\1,g')"
 dump_url="$(echo ${MONGODB_URI/$dump_protocol/})"
 dump_userAndPass="$(echo $dump_url | grep @ | cut -d@ -f1)"
@@ -47,7 +44,7 @@ dump_pass=$(echo $dump_userAndPass | cut -d: -f2)
 dump_host="$(echo ${dump_url/$dump_userAndPass@/} | cut -d/ -f1)"
 dump_db="$(echo $dump_url | grep / | cut -d/ -f2-)"
 
-./mongodump --host=${dump_host} --db=${dump_db} --username=${dump_user} --password=${dump_pass} -out=sandbox_db
+./mongodump --host=${dump_host} --db=${dump_db} --username=${dump_user} --password=${dump_pass} -o sandbox_db
 
 echo "Restoring data ..."
 
