@@ -33,8 +33,8 @@ echo "Dumping data ..."
 mkdir sandbox_db
 chmod -R a+rwX sandbox_db
 
-MONGODB_URI=$(cat $ENV_DIR/MONGODB_URI)
-MONGOLAB_COBALT_URI=$(cat $ENV_DIR/MONGOLAB_COBALT_URI)
+MONGODB_URI=$(cat $ENV_DIR/MONGODB_B_URI)
+MONGODB_R_URI=$(cat $ENV_DIR/REVIEWDB_URI)
 
 dump_protocol="$(echo ${MONGODB_URI} | grep :// | sed -e's,^\(.*://\).*,\1,g')"
 dump_url="$(echo ${MONGODB_URI/$dump_protocol/})"
@@ -48,8 +48,8 @@ dump_db="$(echo $dump_url | grep / | cut -d/ -f2-)"
 
 echo "Restoring data ..."
 
-protocol="$(echo ${MONGOLAB_COBALT_URI} | grep :// | sed -e's,^\(.*://\).*,\1,g')"
-url="$(echo ${MONGOLAB_COBALT_URI/$protocol/})"
+protocol="$(echo ${MONGODB_R_URI} | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+url="$(echo ${MONGODB_R_URI/$protocol/})"
 userAndPass="$(echo $url | grep @ | cut -d@ -f1)"
 user=$(echo $userAndPass | cut -d: -f1)
 pass=$(echo $userAndPass | cut -d: -f2)
